@@ -9,6 +9,10 @@ In this assignment, we will be working with a dataset containing information abo
 You will need to load the tidyverse library
 
 ```{r}
+
+library(tidyverse)
+
+
 ```
 
 Then you'll load the data from the web. The URL for the data is: https://raw.githubusercontent.com/dwillis/jour405/refs/heads/main/data/biden_wh_salaries_2024.csv. You will create a dataframe called `wh_salaries` that contains the data from this URL.
@@ -16,6 +20,9 @@ Then you'll load the data from the web. The URL for the data is: https://raw.git
 ### Task 2: Load the Data and Describe It
 
 ```{r}
+
+wh_salaries <- read_csv("https://raw.githubusercontent.com/dwillis/jour405/refs/heads/main/data/biden_wh_salaries_2024.csv")
+
 ```
 ### Task 3: Describe the Data
 
@@ -23,11 +30,17 @@ You should examine that dataframe carefully by clicking on it in the Environment
 
 ANSWER HERE
 
+What stands out to me are the, in total, 11 advisers, directors, and one policy fellow that recorded 0 as their salary.  The highest salary is over 250,000 and lowest, disregarding the 0's, is 2,000. 
+
 ### Task 4: Calculate the Mean and Median of the Salaries
 
 Write code to calculate the mean and median of the salaries in the dataset using the `summarize()` function. You don't need to make a new dataframe, just display the results.
 
 ```{r}
+
+mean(wh_salaries$salary)
+  
+median(wh_salaries$salary)
 
 ```
 
@@ -37,6 +50,15 @@ Take the code you just wrote and add in the minimum and maximum salaries (the fu
 
 ```{r}
 
+
+wh_salaries <- wh_salaries |>
+  mutate( 
+    min(wh_salaries$salary), 
+    max(wh_salaries$salary), 
+    mean_salary = mean(wh_salaries$salary),
+    median_salary = median(wh_salaries$salary),
+    )
+
 ```
 
 ### Task 6: Describe the Results
@@ -45,8 +67,16 @@ Write a couple of sentences describing the results of your analysis. What do the
 
 ANSWER HERE
 
+The mean tells me the average of the salaries, which is 107,306. Still what stands out most for me is the 0 as the salary for some positions. I am curious why it is zero rather than n/a. The maximum tells me the highest paid position is an Associate Counsel, but there are others in the same position paid less. I am curious as what kind of associate counsel are they a part of and what is the difference. 
+
+
 ### Task 7: Story Idea
 
 Based on the data, what is your best story idea? What is the next step you would take to develop that story idea?
 
 ANSWER HERE
+
+1) Answering why there are zeros. Maybe they were unpaid internship positions or something similar?
+2) Identify the different positions and rank the highest to lowest paid positions. 
+3) Using Associate Counsel as an example, find a position with varying salaries and investigate why. Could there be different departments with the same position?
+4) Identify every person's sex and see who is paid more between men or women. Or which sex is in higher paying positions. 
