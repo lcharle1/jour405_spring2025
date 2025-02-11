@@ -6,21 +6,62 @@ Follow along with the demo to learn how to calculate crime rates using R and the
 
 ### Task 1: Load the tidyverse and install and load janitor
 
+```{r}
+
+library(tidyverse)
+library(janitor)
+
+```
 
 
 ### Task 2: Load the crime dataset from https://raw.githubusercontent.com/dwillis/jour405/refs/heads/main/data/md_annual_crime.csv
 
+```{r}
+
+md_annual_crime <- read_csv("https://raw.githubusercontent.com/dwillis/jour405/refs/heads/main/data/md_annual_crime.csv") |> 
+  clean_names()
+
+
+```
 
 
 ### Task 3: Use janitor to clean up the column names
 
+```{r}
 
 
-### Task 4: Calculate the total crime rate for each year (picking our unit!)
+
+
+```
+
+
+
+### Task 4: Calculate the total crime rate for each year (picking our unit!). Number of crime / population
+
+
+```{r}
+
+md_annual_crime |>
+  mutate (total_rate = grand_total/population * 10000)
+
+```
 
 
 
 ### Task 5: Calculate the violent and property crime rates for each year (same unit)
+
+```{r}
+
+crime_rates <- md_annual_crime |>
+  mutate( 
+    total_rate = grand_total/population * 10000, 
+    violent_rate = violent_crime_total/population * 10000, 
+    property_rate = property_crime_total / population * 10000)
+
+
+
+
+```
 
 
 
@@ -28,7 +69,9 @@ Follow along with the demo to learn how to calculate crime rates using R and the
 
 Write a few sentences about what you found in the data. What years had the highest crime rates? What years had the lowest crime rates? Does the pattern match your expectations?
 
+- During the 90s, specifically 1991 - 1996, there was an increase in the total crime rate. The property crime rate is not new but in addition with the rising violent crime rate they add up to a higher crime rate. 1979-1982 also showed a spike in total crime rate. I would like to reflect these years to times of serial killers, policy changes, and global situations/disasters (including war). I think during these times those issues could have played a big part in the crime and even the type of crime reported. 
 
+- Ironically during a time of rioting and social distress, 2020 has the lowest reported total crime. With most being property crime. 
 
 
 When you are done, save your work, switch to GitHub Desktop, then add, commit and push your changes to GitHub and submit the URL of the notebook in ELMS.
