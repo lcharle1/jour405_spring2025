@@ -7,18 +7,31 @@ In this assignment, you will be working with a dataset of songs played on Spotif
 ### Task 1: Load the tidyverse
 
 ```{r}
+
+library(tidyverse)
 ```
 
 ### Task 2: Load the Spotify Songs dataset from https://raw.githubusercontent.com/dwillis/jour405/refs/heads/main/data/spotify_2020.csv
 
 ```{r}
+
+spotify_songs <- read_csv("https://raw.githubusercontent.com/dwillis/jour405/refs/heads/main/data/spotify_2020.csv")
+
 ```
 
 ### Task 3: Calculate the mean and standard deviation of the danceability scores
 
-Write code to calculate the mean standard deviation of the danceability scores in the Spotify dataset. Display those.
+Write code to calculate the mean and standard deviation of the danceability scores in the Spotify dataset. Display those.
 
 ```{r}
+
+
+
+spotify_songs |>
+  summarize (mean = mean(danceability), sd = sd (danceability))
+
+
+
 ```
 
 ### Task 4: Create a histogram of the danceability scores
@@ -26,20 +39,71 @@ Write code to calculate the mean standard deviation of the danceability scores i
 Write code to create a histogram of the danceability scores in the Spotify dataset, based on the example we did in class.
 
 ```{r}
+
+spotify_songs |> 
+  ggplot() +
+  geom_histogram(aes(x = danceability), binwidth = .10 )
+
+
 ```
 
 ### Task 5: Add a line to the histogram for the mean danceability score
 
-Write code to add a vertical line to the histogram for the mean danceability score, based on the example in class.
+Take the same code and add a vertical line to the histogram for the mean danceability score, based on the example in class.
 
 ```{r}
+
+
+spotify_songs |> 
+  ggplot() +
+  geom_histogram(aes(x = danceability), binwidth = .10 ) +
+  geom_vline(aes(xintercept = mean(danceability), color = "red"), linetype = "dashed", size = 1 )
+
+
 ```
 
-### Task 6: Describe our results
 
-Write a few sentences about the distribution of danceability scores in the Spotify dataset. Is it a normal distribution, or is it skewed in one direction? What does the mean and distribution tell us about the songs in the dataset?
+### Task 6: Add two lines to the histogram to show one standard deviation
 
-### Task 7: Save Your Work and Put it on GitHub
+Take the previous code and add two lines to the histogram for the 1st standard deviation below and above the mean score.
+
+```{r}
+
+spotify_songs |> 
+  ggplot() +
+  geom_histogram(aes(x = danceability), binwidth = .10 ) +
+  geom_vline(aes(xintercept = mean(danceability), color = "red"), linetype = "dashed", size = 1 )  +
+  geom_vline(aes(xintercept = mean(danceability) - sd (danceability)), color = "pink", linetype = "dashed", size = 1 ) +
+  geom_vline(aes(xintercept = mean(danceability) + sd (danceability)), color = "pink", linetype = "dashed", size = 1 )
+
+
+```
+
+### Task 7: Describe our results and pitch a story
+
+Write a few sentences about the distribution of danceability scores in the Spotify dataset. Is it a normal distribution, or is it skewed in one direction? What does the mean and one standard distribution tell us about the songs in the dataset? Draft a short story pitch from this data.
+
+
+Statistically, this data is skewed left, the curve is more right. This histogram is telling me over 450 songs in Spotify's 2020 have a dance ability between .50 - .75, more specifically it is probably .62. Before writing this into a story I would organize the rate to be easier for people to understand or gauge it. 0 - none, .25 - low, .50 - good, .75 - well, 1 - high. 
+
+Draft:
+
+Headline: Which is more important for a song? Danceability or popularity. 
+
+Fox 5 by Lil Keed ft. Gunna is ranked the most danceable song in 2020. Blinding Light by The Weeknd was the most popular in 2020. Both were ranked by Spotify.
+
+Over 1750 songs were scored and ranked on their danceability. Fox 5 received a score of 0.97. The least danceable song of 2020 was Deep Sleep Recovery Noise by Water Sound Natural White Noise with a score of 0. No surprise there. 
+
+Blinding Lights received a danceable score of .51, less than the average danceable score of .67. Over 450 songs were scored between .50 - .75. Fox 5 received a popularity score of 59 out of 100. Blinding Lights was a solid 100 out of 100. 
+
+[quote answering the question about their preference, danceability or popularity]
+
+2020 was the year of the COVID-19 Pandemic and for a portion of it, the world instructed not to go outside.
+
+[I would do more research to find if past years, songs played Spotify had a close danceability and popularity. To see if the pandemic played a part in these results.]
+
+
+
+### Task 8: Save Your Work and Put it on GitHub
 
 Save this notebook, then commit it to your local repository. Push the changes to your GitHub repository and submit the URL for this file in ELMS.
-
