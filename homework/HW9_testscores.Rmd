@@ -5,6 +5,7 @@ name: Laura Charleston
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
+options(scipen=999)
 library(tidyverse)
 ```
 
@@ -117,7 +118,7 @@ Alternative: The new reading program didn't work
 
 ```{r}
 # Set the significance level for your test
-alpha_level <- 100 # Replace with the appropriate value
+alpha_level <- 0.05 # Replace with the appropriate value
 
 # Perform a one-sample t-test
 # Since we want to know if scores improved (increased), we use a one-sided test (alternative = "greater")
@@ -134,6 +135,7 @@ t_test_result
 ### Reflection Question 4:
 What does the p-value tell you, and what doesn't it tell you? How would you explain these results to a non-technical audience while maintaining accuracy?
 
+The p-value is less than the alpha level, 0.05, which means we can reject the null hypothesis. We can take the route of the alternative hypothesis that the reading program did not work. It does not mean it is completely out of the question, but the probability is not in it's favor. 
 
 
 ## Task 5: Interpreting the results for your news story
@@ -151,7 +153,7 @@ ci <- t.test(score_data$reading_score)$conf.int
 # Create a tibble to display the key statistics for your story
 story_stats <- tibble(
   `Previous average` = prior_mean,
-  `New average` = mean(REPLACE_ME),
+  `New average` = mean(new_scores),
   `Improvement` = mean(new_scores) - prior_mean,
   `Percent change` = round(((mean(new_scores) - prior_mean) / prior_mean) * 100, 1),
   `p-value` = p_value,
@@ -169,6 +171,19 @@ story_stats
 ### Reflection Question 5:
 Based on these statistics, what would be your headline and lead paragraph for this story? Is there evidence to support the superintendent's claim?
 
+New Reading Program Slightly Increases Student's Test Score 
+
+A newly implemented reading program made small improvements to the student's test scores on standardized reading tests. 
+
+The school district implemented a reading program to improve the student's reading scores, and though there were improvements to the test score's average, it is unlikely it was due to the reading program. The district's previous average was 72.6 points on standardized reading tests. It is currently 75.7. No doubt there is an increase, but the impact from the reading program is not as significantly as anticipated. 
+
+
 
 ### Reflection Question 6:
 What metrics or outcomes beyond test scores might be important to track for assessing reading performance?
+- the types of books the school has could affect the student's reading abilities
+- the average amount of sleep the students are getting 
+- the average amount of time the students are reading outside of school vs. in school. 
+
+
+
