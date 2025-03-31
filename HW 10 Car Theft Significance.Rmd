@@ -1,6 +1,6 @@
 ---
 title: "Car Thefts Significance"
-name: REPLACE WITH YOUR NAME
+name: Laura Charleston
 ---
 
 Your editor wants to know if there have been recent changes in the number of car thefts in Prince George's County. Using monthly figures and significance testing, you'll come up with an answer and decide whether there's a story here. As with the previous homework, provide answers in this notebook when prompted and you will have to fill in values where you see REPLACE_ME. Get started by loading the tidyverse in a new R block.
@@ -176,8 +176,8 @@ ggplot(aes(x = period, y = mean_thefts, fill = period)) +
 
 ### Task 8: Reflection
 
-Given the above chart, is the difference between the two periods statistically significant? Can we reject the null hypothesis?
-
+Given the above chart, is the difference between the two periods statistically significant? Can we reject the null hypothesis? 
+ 
 How would you revise your headline from Task 6, if at all? What would you tell your editor, and what would you expect her to ask you?
 
 PUT ANSWERS HERE
