@@ -3,18 +3,19 @@ title: " final_project "
 output: html_notebook
  b---
  
-New concept/Update: As I was researching more data and trying to incorproate race/ethnicity to the data, I found a decades worth of occupaitonal earning differences between men and women. It sparked a story idea of the earning difference between men and women in dominated fields. Website link: https://www.census.gov/data/tables/time-series/demo/industry-occupation/median-earnings.html? . I did use chatgpt to try to find sources with data that included men and women earnings, annually, for different race/ethnicities and in different occupations.  [find a way to add link or pdf link to chat convo]
+New concept/Update: As I researched more data and tried to incorporate race and ethnicity into the data, I found decade-long occupational earning differences between men and women. It sparked a story idea of the earning difference between men and women in dominated fields. Website link: https://www.census.gov/data/tables/time-series/demo/industry-occupation/median-earnings.html? . I used ChatGPT to try to find sources with data on men's and women's earnings, annually, for different races and ethnicities, and in various occupations. 
 
-The story is women are still earning less than men even in women dominated fields. Three women dominated fields are: General and operations managers, Elementary and middle school teachers, and Registered nurses. 
+The story is that women are still earning less than men even in women-dominated fields. Three women-dominated fields are: General and operations managers, Elementary and middle school teachers, and Registered nurses. 
 
-I randomly chose the women dominated fields from this website from the U.S. Department of Labor's Women Bureau: https://www.dol.gov/agencies/wb/data/occupations/most-common-occupations-women-labor-force. 
+I randomly chose women-dominated fields from this website: https://www.dol.gov/agencies/wb/data/occupations/most-common-occupations-women-labor-force, provided by the U.S. Department of Labor's Women's Bureau. 
 
-My null and alternative hypothesis remain the same: 
+My null and alternative hypotheses remain the same: 
 -Null hypothesis: There is no difference in the average earnings between men and women
 
 - Alternate hypothesis: There is a difference in the average earnings between men and women. 
 
-
+Here is the ChatGPT link. I used it because I had to remove a row that had N/A in it and to find which way would be best to display the occupation and earning differences. I forgot to remove it before converting to CSV. 
+https://chatgpt.com/share/680e7c79-55e8-8003-b021-3f2a3150f277
 
 
 
