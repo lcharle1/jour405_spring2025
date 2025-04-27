@@ -2,9 +2,23 @@
 title: " final_project "
 output: html_notebook
  b---
+ 
+New concept/Update: As I was researching more data and trying to incorproate race/ethnicity to the data, I found a decades worth of occupaitonal earning differences between men and women. It sparked a story idea of the earning difference between men and women in dominated fields. Website link: https://www.census.gov/data/tables/time-series/demo/industry-occupation/median-earnings.html? . I did use chatgpt to try to find sources with data that included men and women earnings, annually, for different race/ethnicities and in different occupations.  [find a way to add link or pdf link to chat convo]
+
+The story is women are still earning less than men even in women dominated fields. Three women dominated fields are: General and operations managers, Elementary and middle school teachers, and Registered nurses. 
+
+I randomly chose the women dominated fields from this website from the U.S. Department of Labor's Women Bureau: https://www.dol.gov/agencies/wb/data/occupations/most-common-occupations-women-labor-force. 
+
+My null and alternative hypothesis remain the same: 
+-Null hypothesis: There is no difference in the average earnings between men and women
+
+- Alternate hypothesis: There is a difference in the average earnings between men and women. 
 
 
-Using table A-7 from a pdf, https://www2.census.gov/library/publications/2024/demo/p60-282.pdf ,produced by the US Census Bureau about the number and real median earnings of total workers and full-time, year-round workers with earnings by sex, from 1960 to 2023. I narrowed down my research to total workers and 2000 to 2023 because the prior to 2000 the data has N/A's. Information on sampling error, non sampling error, and definitions is available at <https://www2.census.gov/programs-surveys/cps/techdocs/cpsmar24.pdf. 
+
+
+
+Previous update: Using table A-7 from a pdf, https://www2.census.gov/library/publications/2024/demo/p60-282.pdf ,produced by the US Census Bureau about the number and real median earnings of total workers and full-time, year-round workers with earnings by sex, from 1960 to 2023. I narrowed down my research to total workers and 2000 to 2023 because the prior to 2000 the data has N/A's. Information on sampling error, non sampling error, and definitions is available at <https://www2.census.gov/programs-surveys/cps/techdocs/cpsmar24.pdf. 
 
 
 Compared to the other source I found, this does not mention the race/ethnicity of the workers. But I altered by null and alternate hypothesis to match the data. 
@@ -21,26 +35,46 @@ library(tidyverse)
 
 library(janitor)
 
+library(readr)
+
+library(dplyr)
+
+library(ggplot2)
+
+
+```
+
+```{r}
+#Earning dataset showcasing the earnings between men and women over the last 10 years.  
+earning_data <- read_csv("project/Final Project Earnings from Different Occupations for Men and Women 2023-2013  - Copy of Sheet1.csv")
+
+#clean the dataset
+earning_data <- earning_data %>%
+  clean_names()
+
+#I found a row I forgot to remove that has no data, it just had N/A in it.
+cleaned_earning_data <- earning_data %>%
+  drop_na()
+
+view(cleaned_earning_data)
+
 ```
 
 
 ```{r}
-## Performing t-test
-
-
-#Earning dataset showcasing the earnings between men and women over the last 23 years.  
-earning_data <- read_csv("project/earningsandratiobysexoccrace-2023.xlsx - Total Workers Sheet.csv")
 
 # Set the significance level
 alpha_level <- 0.05
 
-# Perform a two-sample t-test comparing men vs. women earnings
-t_test_result <- t.test(earnings ~ sex, data = earning_data)
-
-t_test_result
+t_test_result <- t.test(earnings ~ sex, data = cleaned_earning_data)
 
 
+#view t-test
+view(t_test_results)
+
+  
 ```
+
 
 ```{r}
 # Get the p-value
@@ -51,12 +85,12 @@ ci <- t_test_result$conf.int
 
 # Compute group stats
 group_stats <- earning_data |>
-  group_by(sex) |>
-  summarize(avg_earnings = mean(earnings, na.rm = TRUE))
+  group_by(Sex) |>
+  summarize(avg_earnings = mean(Earnings, na.rm = TRUE))
 
 # Extract group means
-mean_male <- group_stats |> filter(sex == "Male") |> pull(avg_earnings)
-mean_female <- group_stats |> filter(sex == "Female") |> pull(avg_earnings)
+mean_male <- group_stats |> filter(Sex == "Male") |> pull(avg_earnings)
+mean_female <- group_stats |> filter(Sex == "Female") |> pull(avg_earnings)
 
 # Build a summary tibble for your story
 story_stats <- tibble(
@@ -75,23 +109,91 @@ story_stats
 
 ```
 
-According to the story_stats, we can reject the null hypothesis because there a difference in average earnings between men and women and the p-value is 0.00, 
+
+
+```{r}
+# Get the p-value
+p_value <- t_test_result$p.value
+
+# Get the 95% confidence interval
+ci <- t_test_result$conf.int
+
+# Compute group stats
+group_stats <- cleaned_earning_data %>%
+  group_by(sex) %>%
+  summarize(avg_earnings = mean(earnings, na.rm = TRUE), .groups = "drop")
+
+# Extract group means
+mean_male <- group_stats %>% filter(sex == "Men") %>% pull(avg_earnings)
+mean_female <- group_stats %>% filter(sex == "Women") %>% pull(avg_earnings)
+
+# Build a summary tibble for your story
+story_stats <- tibble(
+  `Male average` = mean_male,
+  `Female average` = mean_female,
+  `Difference` = mean_male - mean_female,
+  `Percent difference` = round(((mean_male - mean_female) / mean_female) * 100, 1),
+  `p-value` = sprintf("%.4f", p_value),
+  `Lower bound (95% CI)` = round(ci[1], 2),
+  `Upper bound (95% CI)` = round(ci[2], 2),
+  `Confidence level` = "95%"
+)
+
+# Show the summary
+glimpse(story_stats)
+```
+
+According to the story_stats, we can reject the null hypothesis because 0.02 < 0.05. There is no difference in the average earnings between men and women. 
+
+Below are three graphs, one for each occupation showing the variations of earning differences between men and women over the last decade, except 2020. 
 
 ```{r}
 
-#Line graph showing the earnings of men and women every year between 2000 - 2023.
+##Registered Nurse Graph 
 
-ggplot(earning_data, aes(x = year, y = earnings, color = sex)) +
-  geom_line(size = 1.2) +
-  geom_point(size = 2) +
+# Filter data for Registered Nurses
+nurse_data <- cleaned_earning_data %>%
+  filter(occupation == "Registered nurses")
+
+# Plot
+ggplot(nurse_data, aes(x = year, y = earnings, fill = sex)) +
+  geom_col(position = "dodge") +
   labs(
-    title = "Median Earnings by Sex Over Time",
+    title = "Earnings of Registered Nurses (2013–2023)",
     x = "Year",
     y = "Median Earnings (USD)",
-    color = "Sex"
+    fill = "Sex"
   ) +
   theme_minimal() +
-  scale_color_manual(values = c("Male" = "#1f78b4", "Female" = "#e31a1c")) +
+  scale_fill_manual(values = c("Men" = "Blue", "Women" = "Red")) +
+  theme(
+    plot.title = element_text(face = "bold", size = 14),
+    axis.title = element_text(face = "bold"),
+    legend.position = "top"
+  )
+```
+Description: 2013 and 2014, there is a decrease in both earnings. In 2015 there is a spike for women and they surpass men's earnings, but decrease below men the following year. In 2018 the earnings increase significantly and continue to increase the rest of the years. Men increase more than women. 
+
+
+
+```{r}
+##Elementary and middle school teachers Graph 
+
+# Filter data for Elementary and middle school teachers
+teacher_data <- cleaned_earning_data %>%
+  filter(occupation == "Elementary and middle school teachers")
+
+# Plot
+ggplot(teacher_data, aes(x = year, y = earnings, fill = sex)) +
+  geom_col(position = "dodge") +
+  labs(
+    title = "Earnings of Elementary and middle school teachers (2013–2023)",
+    x = "Year",
+    y = "Median Earnings (USD)",
+    fill = "Sex"
+  ) +
+  theme_minimal() +
+  scale_fill_manual(values = c("Men" = "Blue", "Women" = "Red")) +
   theme(
     plot.title = element_text(face = "bold", size = 14),
     axis.title = element_text(face = "bold"),
@@ -99,6 +201,35 @@ ggplot(earning_data, aes(x = year, y = earnings, color = sex)) +
   )
   
 ```
+Description: Throughout the entire decade men surpass women. In 2015 the earnings for men begin to decrease, while women is slowly rising. In 2017 there is a close earning amount but the following year women decrease and men begin to increase. After 2020, they are both increase, but there is an earning gap. 
 
 
+```{r}
+
+##General and operations managers Graph 
+
+# Filter data for General and operations managers
+manager_data <- cleaned_earning_data %>%
+  filter(occupation == "General and operations managers")
+
+# Plot
+ggplot(manager_data, aes(x = year, y = earnings, fill = sex)) +
+  geom_col(position = "dodge") +
+  labs(
+    title = "Earnings of General and operations managers (2013–2023)",
+    x = "Year",
+    y = "Median Earnings (USD)",
+    fill = "Sex"
+  ) +
+  theme_minimal() +
+  scale_fill_manual(values = c("Men" = "Blue", "Women" = "Red")) +
+  theme(
+    plot.title = element_text(face = "bold", size = 14),
+    axis.title = element_text(face = "bold"),
+    legend.position = "top"
+  )
+  
+
+```
+Description: There is a decrease from 2013 to 2014 for men and women. From 2014 to 2018, there is a back and forth increase for women's earnings. During that time men gradually increase. 2019 to 2023, except 2020, there is a gradual increase for men and women. There is a significant earning gap between men and women nonetheless. 
 
