@@ -3,7 +3,12 @@ title: " final_project "
 output: html_notebook
  b---
  
-New concept/Update: As I researched more data and tried to incorporate race and ethnicity into the data, I found decade-long occupational earning differences between men and women. It sparked a story idea of the earning difference between men and women in dominated fields. Website link: https://www.census.gov/data/tables/time-series/demo/industry-occupation/median-earnings.html? . I used ChatGPT to try to find sources with data on men's and women's earnings, annually, for different races and ethnicities, and in various occupations. 
+New Update:
+Here is the link to my google spreadsheet of the earnings: https://docs.google.com/spreadsheets/d/1z2vn3cJHedA4sZgrqSpOfEOwBfjoCrCRR3VcFPk8dys/edit?gid=2062801792#gid=2062801792
+  
+  
+  
+Previous Update: As I researched more data and tried to incorporate race and ethnicity into the data, I found decade-long occupational earning differences between men and women. It sparked a story idea of the earning difference between men and women in dominated fields. Website link: https://www.census.gov/data/tables/time-series/demo/industry-occupation/median-earnings.html? . I used ChatGPT to try to find sources with data on men's and women's earnings, annually, for different races and ethnicities, and in various occupations. 
 
 The story is that women are still earning less than men even in women-dominated fields. Three women-dominated fields are: General and operations managers, Elementary and middle school teachers, and Registered nurses. 
 
@@ -18,17 +23,6 @@ Here is the ChatGPT link. I used it because I had to remove a row that had N/A i
 https://chatgpt.com/share/680e7c79-55e8-8003-b021-3f2a3150f277
 
 
-
-Previous update: Using table A-7 from a pdf, https://www2.census.gov/library/publications/2024/demo/p60-282.pdf ,produced by the US Census Bureau about the number and real median earnings of total workers and full-time, year-round workers with earnings by sex, from 1960 to 2023. I narrowed down my research to total workers and 2000 to 2023 because the prior to 2000 the data has N/A's. Information on sampling error, non sampling error, and definitions is available at <https://www2.census.gov/programs-surveys/cps/techdocs/cpsmar24.pdf. 
-
-
-Compared to the other source I found, this does not mention the race/ethnicity of the workers. But I altered by null and alternate hypothesis to match the data. 
-
-Null hypothesis: There is no difference in the average earnings between men and women
-
-Alternate hypothesis: There is a difference in the average earnings between men and women. 
-
-I replicated the work we did in HW 9 (testscores) to perform the t-test and show a linegraph showing the difference in earnings between men and women in the last 23 years. 
 
 ```{r}
 # library
@@ -233,4 +227,3 @@ ggplot(manager_data, aes(x = year, y = earnings, fill = sex)) +
 
 ```
 Description: There is a decrease from 2013 to 2014 for men and women. From 2014 to 2018, there is a back and forth increase for women's earnings. During that time men gradually increase. 2019 to 2023, except 2020, there is a gradual increase for men and women. There is a significant earning gap between men and women nonetheless. 
-
