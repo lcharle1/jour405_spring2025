@@ -3,6 +3,10 @@ title: " final_project "
 output: html_notebook
  b---
  
+
+  
+    
+
 New Update:
 Here is the link to my google spreadsheet of the earnings: https://docs.google.com/spreadsheets/d/1z2vn3cJHedA4sZgrqSpOfEOwBfjoCrCRR3VcFPk8dys/edit?gid=2062801792#gid=2062801792
   
@@ -21,6 +25,8 @@ My null and alternative hypotheses remain the same:
 
 Here is the ChatGPT link. I used it because I had to remove a row that had N/A in it and to find which way would be best to display the occupation and earning differences. I forgot to remove it before converting to CSV. 
 https://chatgpt.com/share/680e7c79-55e8-8003-b021-3f2a3150f277
+
+
 
 
 
@@ -65,7 +71,7 @@ t_test_result <- t.test(earnings ~ sex, data = cleaned_earning_data)
 
 
 #view t-test
-view(t_test_results)
+view(t_test_result)
 
   
 ```
@@ -80,19 +86,19 @@ ci <- t_test_result$conf.int
 
 # Compute group stats
 group_stats <- earning_data |>
-  group_by(Sex) |>
-  summarize(avg_earnings = mean(Earnings, na.rm = TRUE))
+  group_by(sex) |>
+  summarize(avg_earnings = mean(earnings, na.rm = TRUE))
 
 # Extract group means
-mean_male <- group_stats |> filter(Sex == "Male") |> pull(avg_earnings)
-mean_female <- group_stats |> filter(Sex == "Female") |> pull(avg_earnings)
+mean_men <- group_stats |> filter(sex == "Men") |> pull(avg_earnings)
+mean_women <- group_stats |> filter(sex == "Women") |> pull(avg_earnings)
 
 # Build a summary tibble for your story
 story_stats <- tibble(
-  `Male average` = mean_male,
-  `Female average` = mean_female,
-  `Difference` = mean_male - mean_female,
-  `Percent difference` = round(((mean_male - mean_female) / mean_female) * 100, 1),
+  `Male average` = mean_men,
+  `Female average` = mean_women,
+  `Difference` = mean_men - mean_women,
+  `Percent difference` = round(((mean_men - mean_women) / mean_women) * 100, 1),
   `p-value` = sprintf("%.4f", p_value),
   `Lower bound (95% CI)` = round(ci[1], 2),
   `Upper bound (95% CI)` = round(ci[2], 2),
@@ -100,7 +106,7 @@ story_stats <- tibble(
 )
 
 # Show the summary
-story_stats
+view(story_stats)
 
 ```
 
@@ -138,9 +144,24 @@ story_stats <- tibble(
 glimpse(story_stats)
 ```
 
-According to the story_stats, we can reject the null hypothesis because 0.02 < 0.05. There is no difference in the average earnings between men and women. 
+Review: According to the story_stats, we can reject the null hypothesis because 0.02 < 0.05. There is no difference in the average earnings between men and women. 
 
 Below are three graphs, one for each occupation showing the variations of earning differences between men and women over the last decade, except 2020. 
+
+```{r}
+### two way ANOVA Test
+
+# Run the model
+two_way_ANOVA <- aov(earnings ~ occupation * sex, data = earning_data)
+
+# View the ANOVA test
+View(two_way_ANOVA)
+
+
+```
+Review: 
+
+
 
 ```{r}
 
