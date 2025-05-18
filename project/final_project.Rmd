@@ -4,7 +4,8 @@ output: html_notebook
  b---
  
 
-  
+Last update:
+
     
 
 New Update:
@@ -42,42 +43,46 @@ library(dplyr)
 
 library(ggplot2)
 
+library(corrplot)
+
 
 ```
 
 ```{r}
 #Earning dataset showcasing the earnings between men and women over the last 10 years.  
-earning_data <- read_csv("project/Final Project Earnings from Different Occupations for Men and Women 2023-2013  - Copy of Sheet1.csv")
+earning_data <- read_csv("https://raw.githubusercontent.com/lcharle1/jour405_spring2025/refs/heads/main/project/Final%20Project%20Earnings%20from%20Different%20Occupations%20for%20Men%20and%20Women%202023-2013%20%20-%20Copy%20of%20Sheet1.csv")
 
 #clean the dataset
 earning_data <- earning_data %>%
   clean_names()
 
-#I found a row I forgot to remove that has no data, it just had N/A in it.
-cleaned_earning_data <- earning_data %>%
-  drop_na()
-
-view(cleaned_earning_data)
+view(earning_data)
 
 ```
 
 
 ```{r}
-
+### T test
 # Set the significance level
 alpha_level <- 0.05
 
-t_test_result <- t.test(earnings ~ sex, data = cleaned_earning_data)
+t_test_result <- t.test(earnings ~ sex, data = earning_data)
 
 
 #view t-test
-view(t_test_result)
+print(t_test_result)
 
   
 ```
+Review: 
 
+There is a statistically significant difference in earnings between men and women, because the p-value is 0.02006, which is less than 0.05, you reject the null hypothesis that their is no difference in the average earnings between men and women. 
+
+Looking at the mean in Men and Women, men earned close to $10,000 more than women on average. Men $66,241 and women earned $56,736, the difference is $9,505. 
 
 ```{r}
+### Earning Stats 
+
 # Get the p-value
 p_value <- t_test_result$p.value
 
@@ -85,16 +90,16 @@ p_value <- t_test_result$p.value
 ci <- t_test_result$conf.int
 
 # Compute group stats
-group_stats <- earning_data |>
-  group_by(sex) |>
+group_stats <- earning_data %>%
+  group_by(sex) %>%
   summarize(avg_earnings = mean(earnings, na.rm = TRUE))
 
 # Extract group means
-mean_men <- group_stats |> filter(sex == "Men") |> pull(avg_earnings)
-mean_women <- group_stats |> filter(sex == "Women") |> pull(avg_earnings)
+mean_men <- group_stats %>% filter(sex == "Men") %>% pull(avg_earnings)
+mean_women <- group_stats %>% filter(sex == "Women") %>% pull(avg_earnings)
 
 # Build a summary tibble for your story
-story_stats <- tibble(
+earning_stats <- tibble(
   `Male average` = mean_men,
   `Female average` = mean_women,
   `Difference` = mean_men - mean_women,
@@ -106,69 +111,154 @@ story_stats <- tibble(
 )
 
 # Show the summary
-view(story_stats)
+print(earning_stats)
 
 ```
+Review: 
+This confirms the results from the t test by showing the male and female average earnings, their percent difference which is 16.8% and the p-value still being 0.02. Now we can also say Men earning 16.8% more than women within these occupations and between 2013-2023. Since we are rejecting the null hypothesis for the p-value being less than 0.05, this also means there is a statistical significance within this data. 
 
 
-
-```{r}
-# Get the p-value
-p_value <- t_test_result$p.value
-
-# Get the 95% confidence interval
-ci <- t_test_result$conf.int
-
-# Compute group stats
-group_stats <- cleaned_earning_data %>%
-  group_by(sex) %>%
-  summarize(avg_earnings = mean(earnings, na.rm = TRUE), .groups = "drop")
-
-# Extract group means
-mean_male <- group_stats %>% filter(sex == "Men") %>% pull(avg_earnings)
-mean_female <- group_stats %>% filter(sex == "Women") %>% pull(avg_earnings)
-
-# Build a summary tibble for your story
-story_stats <- tibble(
-  `Male average` = mean_male,
-  `Female average` = mean_female,
-  `Difference` = mean_male - mean_female,
-  `Percent difference` = round(((mean_male - mean_female) / mean_female) * 100, 1),
-  `p-value` = sprintf("%.4f", p_value),
-  `Lower bound (95% CI)` = round(ci[1], 2),
-  `Upper bound (95% CI)` = round(ci[2], 2),
-  `Confidence level` = "95%"
-)
-
-# Show the summary
-glimpse(story_stats)
-```
-
-Review: According to the story_stats, we can reject the null hypothesis because 0.02 < 0.05. There is no difference in the average earnings between men and women. 
-
-Below are three graphs, one for each occupation showing the variations of earning differences between men and women over the last decade, except 2020. 
 
 ```{r}
 ### two way ANOVA Test
 
-# Run the model
-two_way_ANOVA <- aov(earnings ~ occupation * sex, data = earning_data)
+# Run the model for occpuation
+ANOVA_occupation <- aov(earnings ~ occupation * sex, data = earning_data)
 
 # View the ANOVA test
-View(two_way_ANOVA)
+print(ANOVA_occupation)
 
+
+# Run the model for year
+ANOVA_year <- aov(earnings ~ year * sex, data = earning_data)
+
+# View the ANOVA test
+print(ANOVA_year)
+
+```
+
+
+```{r}
+###Tukey's HSD test 
+
+
+#Tukey test for occupation 
+tukey_occupation <- TukeyHSD(ANOVA_occupation)
+
+print(tukey_occupation)
+
+
+#Tukey test for years
+tukey_year <- TukeyHSD(ANOVA_year)
+
+print(tukey_year)
+
+```
+Review:
+
+Occupation -> The test shows that General and Operations Managers earn significantly more than both Elementary and Middle School Teachers, (the difference is about $14.771, with a p-value of 0.003), and Registered Nurses (their difference is about $15,621, with a p-value of 0.0017). However, there is no significant earnings difference between Registered Nurses and Teachers, they have a p-value of 0.9786. On average women earn $9,505 less than men, and this difference is statistically significant as the p-value is 0.009. 
+
+The results show earning disparities between men and women vary by occupation. For example, a male General and Operations Manager earn significantly more than all other groups, particularly more than male Registered Nurses (p-value = 0.0047). Some differences within female occupations are not statistically significant. This probably means that while occupation and gender both influence earnings, the gender pay gap is noticable in certain high-paying roles like management and less so in others. 
+
+Year -> 
+
+The tukey rest results for earnings across years and sex show that, on average, women earned $9,505 less than men, and this difference is statistically significant (p-value = 0.0054). The 95% confidence interval for the difference in earnings ranges from approximately $2,926 to $16,084, indiciating that the pay gap is not only real but consistnetly negative for women across the years.This suggests a persistent and significant gender pay gap from 2013 to 2023. 
+
+I did run into a warning message when I ran  tukey_year:
+Warning messages popped up: 1: In replications(paste("~", xx), data = mf) : non-factors ignored: year
+2: In replications(paste("~", xx), data = mf) :
+  non-factors ignored: year, sex
+3: In TukeyHSD.aov(ANOVA_year) :
+  'which' specified some non-factors which will be dropped
+
+```{r}
+### Multiple Regression
+
+#Creating a model
+mr_model <- lm(earnings ~ `occupation` + `sex` + `year`, data = earning_data)
+
+print(mr_model)
+
+#Correlation Analysis
+selected_var <- earning_data %>%  select(`earnings`, `year`, `occupation`)
+
+cor(selected_var)
+
+#Visualization of Correlation Matrix 
+corr_matrix <- cor(earning_data)
+
+ corrplot(corr_matrix, method = "circle")
+
+
+```
+Review:
+  
+The multiple regression model predicts earnings based on occupation, sex, and year. General and Operations Managers earn $14,771 more than the reference group, most likely Elementary and Middle School Teachers as the tukey test informed us, while Registered Nurses earn $850 less, a small and possibly insignificant difference. Women earn $9,505 less than men, indicating a significant gender pay gap. The year coefficient is 2,699, suggesting that earnings increase by approximately $2,699 each year, on averge. 
+  
+The cor function only recognizing numeric functions. Which means occupation and sex means nothing to it. I am wondering if creating a numeral version of them (Managers = 1, teahcers = 2, Nurses = 3 and Men = 1, Women = 2) would help. 
+  
+  
+```{r}
+###Calculate mean and standard deviation of earnings by year and occupation. 
+
+
+#Calculating by year
+mean_sd_year <- earning_data %>%
+  group_by(year) %>%
+  summarise(
+    mean_earnings = mean(earnings, na.rm = TRUE),
+    sd_earnings = sd(earnings, na.rm = TRUE)
+  )
+
+print(mean_sd_year)
+  
+#Calculating by Occupation
+mean_sd_occupation <- earning_data %>%
+  group_by(occupation) %>%
+  summarise(
+    mean_earnings = mean(earnings, na.rm = TRUE),
+    sd_earnings = sd(earnings, na.rm = TRUE)
+  ) %>%
+  arrange(desc(mean_earnings))  
+  
+print(mean_sd_occupation)
+  
+```
+Review:
+
+
+
+```{r}
+### Z-scores
+
+# Calculate z-scores by earnings 
+earning_data <- earning_data |>
+  mutate(
+    mean = mean(earnings),
+    sd = sd(earnings),
+    z_score = (earnings - mean) / sd
+  )
+  
+glimpse(earning_data)
+  
+  
 
 ```
 Review: 
 
 
 
+
+
 ```{r}
+
+## Below are three graphs, one for each occupation showing the variations of earning differences between men and women over the last decade, except 2020. 
+##
 
 ##Registered Nurse Graph 
 
 # Filter data for Registered Nurses
-nurse_data <- cleaned_earning_data %>%
+nurse_data <- earning_data %>%
   filter(occupation == "Registered nurses")
 
 # Plot
@@ -196,7 +286,7 @@ Description: 2013 and 2014, there is a decrease in both earnings. In 2015 there 
 ##Elementary and middle school teachers Graph 
 
 # Filter data for Elementary and middle school teachers
-teacher_data <- cleaned_earning_data %>%
+teacher_data <- earning_data %>%
   filter(occupation == "Elementary and middle school teachers")
 
 # Plot
@@ -217,7 +307,7 @@ ggplot(teacher_data, aes(x = year, y = earnings, fill = sex)) +
   )
   
 ```
-Description: Throughout the entire decade men surpass women. In 2015 the earnings for men begin to decrease, while women is slowly rising. In 2017 there is a close earning amount but the following year women decrease and men begin to increase. After 2020, they are both increase, but there is an earning gap. 
+Description: Throughout the entire decade men surpass women. In 2015 the earnings for men begin to decrease, while women remain the same but icnrease in 2017. In 2017 there is a close earning amount but the following year women decrease and men begin to increase. After 2020, they are both increase, but there is an earning gap. 
 
 
 ```{r}
@@ -225,7 +315,7 @@ Description: Throughout the entire decade men surpass women. In 2015 the earning
 ##General and operations managers Graph 
 
 # Filter data for General and operations managers
-manager_data <- cleaned_earning_data %>%
+manager_data <- earning_data %>%
   filter(occupation == "General and operations managers")
 
 # Plot
