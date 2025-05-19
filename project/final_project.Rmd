@@ -6,7 +6,12 @@ output: html_notebook
 
 Last update:
 
-    
+1. Fixed wrong name for the results variable
+2. Added two-way ANOVA 
+3. Removed the chunk of code where I used the wrong variable in group_by
+4. Added the tukey test after ANOVA
+5. Added multiple regression model 
+6. Calculated the means, standard deviations, and z-scores.
 
 New Update:
 Here is the link to my google spreadsheet of the earnings: https://docs.google.com/spreadsheets/d/1z2vn3cJHedA4sZgrqSpOfEOwBfjoCrCRR3VcFPk8dys/edit?gid=2062801792#gid=2062801792
@@ -75,6 +80,7 @@ print(t_test_result)
   
 ```
 Review: 
+The t-test was used to compare the mean between men and women to see if they are statisticaly different from each other. 
 
 There is a statistically significant difference in earnings between men and women, because the p-value is 0.02006, which is less than 0.05, you reject the null hypothesis that their is no difference in the average earnings between men and women. 
 
@@ -115,6 +121,8 @@ print(earning_stats)
 
 ```
 Review: 
+The summary tibble was used to provide condensed and organized statistics about my data. Specifically the p-value, male and female average and the difference between the two, percent difference, and the lower bound. 
+
 This confirms the results from the t test by showing the male and female average earnings, their percent difference which is 16.8% and the p-value still being 0.02. Now we can also say Men earning 16.8% more than women within these occupations and between 2013-2023. Since we are rejecting the null hypothesis for the p-value being less than 0.05, this also means there is a statistical significance within this data. 
 
 
@@ -136,6 +144,12 @@ ANOVA_year <- aov(earnings ~ year * sex, data = earning_data)
 print(ANOVA_year)
 
 ```
+Review: 
+The two-way ANOVA is used to examine the effect of two categorical independent variables (year and occupation) on a dependent variable (earnings), and also whether there's any significance between the two factors. 
+
+occupation -> The sum of squares indicates that occupation accounts for the largest variation in earnings, followed by sex and their interaction. The residual standard error of 13,571.67 reflects the average deviation of observed earnings from the model predictions. Overall, occupation appears to have the strongest impact on earnings, with some contribution from sex and the interaction between occupation and sex. 
+
+year -> The results show that both year and sex contribute notably to the variation in earnings, with year have a particularly large effect. The interaction between year and sex explains only a small portion of the variance, suggesting that the impact of sex on earnings does not differ across years. The residual standard error of 12,719.52 indicates the typical deviation of observed earnings from model predictions. The note about unbalanced effects implies unequal group sizes, Which can influence the accuracy of the effect estimates. 
 
 
 ```{r}
@@ -155,6 +169,8 @@ print(tukey_year)
 
 ```
 Review:
+  
+The tukey test is used after the ANOVA test to tell me which specific pairs of variables are statistically significant.  
 
 Occupation -> The test shows that General and Operations Managers earn significantly more than both Elementary and Middle School Teachers, (the difference is about $14.771, with a p-value of 0.003), and Registered Nurses (their difference is about $15,621, with a p-value of 0.0017). However, there is no significant earnings difference between Registered Nurses and Teachers, they have a p-value of 0.9786. On average women earn $9,505 less than men, and this difference is statistically significant as the p-value is 0.009. 
 
@@ -226,6 +242,8 @@ print(mean_sd_occupation)
 ```
 Review:
 
+Calculate the mean and standard deviation of earnings by occupation and year to better understand their averages and variations. 
+
 Year -> Throughout these nine years, average earnings have steadily increased, rising from about $53,555 in 2013 to $76,593 in 2023. This upward trend suggests overall wage growth across the years. The most significant jump appears between 2017, $54,702, and 2018, $64,490, suggesting a potential policy change, economic shift, or industry adjustment during that time. The standard deviation has generally decreased over time (from $18,012 in 2013 to around $13,506 in later years). This implies that earnings became more consistent, with less variations among men and women by 2023. A smaller SD suggests that fewer extreme highs or lows occured, and salaries were more centered around the average. 
 
 
@@ -249,7 +267,6 @@ glimpse(earning_data)
 Review: 
 
 According to the z-score results, men consistently have higher zscores than women across the years, suggesting they earn more relative to their average. For example, a man in 2023 with a z-score of 1.90 earns significantly more, nearly two standard deviations above the mean, while a woman in the same year has a lower z-score, indicating smaller earnings relative to the average. This pattern highlights a consistent gender gap in earnings within the same occupation over time. 
-
 
 
 ```{r}
@@ -339,4 +356,59 @@ ggplot(manager_data, aes(x = year, y = earnings, fill = sex)) +
   
 
 ```
-Description: There is a decrease from 2013 to 2014 for men and women. From 2014 to 2018, there is a back and forth increase for women's earnings. During that time men gradually increase. 2019 to 2023, except 2020, there is a gradual increase for men and women. There is a significant earning gap between men and women nonetheless. 
+Description: There is a decrease from 2013 to 2014 for men and women. From 2014 to 2018, there is a back and forth increase for women's earnings. During that time men gradually increase. 2019 to 2023, except 2020, there is a gradual increase for men and women. There is a significant earning gap between men and women nonetheless.
+
+
+###Story Pitch 
+Main Findings:
+1. My analysis of earnings data from 2013 to 2023 reveals a consistent and measurable gender pay gap across multiple high-earning occupations. Key findings include:
+
+- Men consistently earn more than women across most job categories, with the gap widening in certain management and technical fields.
+
+- The overall mean earnings have increased steadily from 2013 to 2023, but the distribution remains uneven between genders.
+
+- Two-way ANOVA analysis showed statistically significant effects for both occupation and sex, as well as their interaction, on earnings.
+
+- Z-score analysis identified outliers — notably, a few occupations where women's earnings are unexpectedly high or low compared to the norm, suggesting areas for deeper investigation.
+
+Potential Problems & Limitations: 
+1. The data is aggregated and lacks intersectionality (race, age, ethnicity, education level, and more) which limits our understanding of compounding inequalities or other factors that could provide a different perspective on gender pay. 
+
+2. Occupation titles are broad and may mask within-role variation. Like the different types of managers, teachers, nurses, etc. 
+
+3. Data for 2020 is missing, which may affect time-series accuracy.
+
+4. Outlier suggests either errors in data reporting or exceptional cases that need further verification.
+
+Reporting Plan
+Headline Idea:
+“Unequal Pay Still Rules the Top: A Decade of Gender Disparities in High-Income Jobs”
+"Gender Pay Inequality in Women Dominated Fields"
+"#Men in Women Fields" - there is a trend currently where this makes more sense for younger audiences or as a social media post. The trend shows men responding as a woman would in different circumstances.  
+
+Main Angle:
+Investigate why the gender pay gap remains persistent in women-dominated professions or in general, even as public awareness and policy efforts have increased.
+
+Story Components:
+
+1. Visuals: Line graph of mean earnings by gender and year; boxplots by occupation.
+
+2. Case Studies: Profile individuals in roles with large disparities to humanize the data. Interview experts and people who have worked in their fields for a long time to hear their stories or own perspective on the issue. Check credible resources to verify the amount of earnings per year, occupation, etc. There are apps or websites that list the current pay for different positions (Glassdoor) 
+
+3. Expert Commentary: Unions, Labor economists, gender equity researchers, and HR professionals.
+
+4. Policy Context: Reference federal Equal Pay Act enforcement, recent corporate transparency laws, or Union workers/leaders.
+
+Outreach Plan:
+
+1. Contact professional associations.
+
+2. Request interviews from companies or HR reps in occupations with extreme pay gaps.Find specialists or workers currently working at said company. 
+
+3. Investigate whether company-specific factors correlate with smaller gaps. This includes and is not limited to the demography of workers there, demography of official and the higher up employees, among other factors. 
+
+Next Steps for Data:
+
+Conduct follow-up analysis, controlling for job level or seniority if available.
+
+Compare these findings with other years or international data to contextualize the trends.
