@@ -226,7 +226,10 @@ print(mean_sd_occupation)
 ```
 Review:
 
+Year -> Throughout these nine years, average earnings have steadily increased, rising from about $53,555 in 2013 to $76,593 in 2023. This upward trend suggests overall wage growth across the years. The most significant jump appears between 2017, $54,702, and 2018, $64,490, suggesting a potential policy change, economic shift, or industry adjustment during that time. The standard deviation has generally decreased over time (from $18,012 in 2013 to around $13,506 in later years). This implies that earnings became more consistent, with less variations among men and women by 2023. A smaller SD suggests that fewer extreme highs or lows occured, and salaries were more centered around the average. 
 
+
+Occupation -> General and Operations Managers have the highest average earnings at $71,619, with a moderate standard deviation of $11,282, indicating relatively high and somewhat consistent pay within that role. Elementary and Middle School Teachers earn an average of $56,848, with a lwo SD of $4,096, suggesting that most teachers earn similar amounts with little variation in salary. Registered Nurses earn $55,998 on average - sligtly less than teachers - but have a much higher SD of $22,016, indicating wide variation in earnings among nurses, possibly due to differences in specialization, experience, or work setting.
 
 ```{r}
 ### Z-scores
@@ -242,11 +245,10 @@ earning_data <- earning_data |>
 glimpse(earning_data)
   
   
-
 ```
 Review: 
 
-
+According to the z-score results, men consistently have higher zscores than women across the years, suggesting they earn more relative to their average. For example, a man in 2023 with a z-score of 1.90 earns significantly more, nearly two standard deviations above the mean, while a woman in the same year has a lower z-score, indicating smaller earnings relative to the average. This pattern highlights a consistent gender gap in earnings within the same occupation over time. 
 
 
 
